@@ -32,10 +32,10 @@ class ChangeUserServiceImpl(
     }
 
     val user: User = User(
-      createUserRequest.email,
-      createUserRequest.name,
-      createUserRequest.password,
-      UserRole.USER
+      name = createUserRequest.name,
+      email = createUserRequest.email,
+      password = createUserRequest.password,
+      role = UserRole.USER
     ).encodePassword(bCryptPasswordEncoder)
 
     return CreateUserResponse.of(
@@ -50,7 +50,7 @@ class ChangeUserServiceImpl(
   ): UpdateUserResponse {
     val user: User = userService
       .validateReturnUser(userId)
-      .update(updateUserRequest.name, updateUserRequest.role)
+      .update(name = updateUserRequest.name, role = updateUserRequest.role)
 
     return user.let(UpdateUserResponse::of)
   }
@@ -61,7 +61,7 @@ class ChangeUserServiceImpl(
   ): UpdateMeResponse {
     val user: User = userService
       .validateReturnUser(userId)
-      .update(updateUserRequest.name, updateUserRequest.role)
+      .update(name = updateUserRequest.name, role = updateUserRequest.role)
 
     return UpdateMeResponse.of(user, tokenProvider.createFullTokens(user))
   }

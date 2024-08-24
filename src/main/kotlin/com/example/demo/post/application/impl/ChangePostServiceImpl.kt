@@ -45,9 +45,9 @@ class ChangePostServiceImpl(
     val post: Post = postService
       .validateReturnPost(postId)
       .update(
-        updatePostRequest.title,
-        updatePostRequest.subTitle,
-        updatePostRequest.content
+        title = updatePostRequest.title,
+        subTitle = updatePostRequest.subTitle,
+        content = updatePostRequest.content
       )
 
     return post.let(UpdatePostResponse::of)
