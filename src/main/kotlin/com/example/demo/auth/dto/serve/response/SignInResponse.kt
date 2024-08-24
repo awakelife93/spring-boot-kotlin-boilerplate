@@ -20,7 +20,7 @@ class SignInResponse(
   @field:Schema(description = "User Name", nullable = false)
   val name: String,
 
-  @field:Schema(description = "User Email", nullable = false)
+  @field:Schema(description = "User Email", nullable = false, format = "email")
   val email: String,
 ) {
   companion object {

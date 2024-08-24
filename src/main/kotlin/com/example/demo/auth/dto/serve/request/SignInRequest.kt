@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
 data class SignInRequest(
-  @field:Schema(description = "User Email", nullable = false)
+  @field:Schema(description = "User Email", nullable = false, format = "email")
   @field:NotBlank(message = "field email is blank")
   @field:Email(message = "field email is not email format")
   val email: String,

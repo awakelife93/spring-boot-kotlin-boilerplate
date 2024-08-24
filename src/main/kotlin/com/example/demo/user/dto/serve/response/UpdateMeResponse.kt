@@ -14,7 +14,7 @@ class UpdateMeResponse(
   @field:Schema(description = "User Name", nullable = false)
   val name: String,
 
-  @field:Schema(description = "User Email", nullable = false)
+  @field:Schema(description = "User Email", nullable = false, format = "email")
   val email: String,
 
   @field:Schema(description = "User Access Token", nullable = true)

@@ -10,7 +10,7 @@ data class CreateUserRequest(
   @field:NotBlank(message = "field name is blank")
   val name: String,
 
-  @field:Schema(description = "User Email", nullable = false)
+  @field:Schema(description = "User Email", nullable = false, format = "email")
   @field:NotBlank(message = "field email is blank")
   @field:Email(message = "field email is not email format")
   val email: String,
