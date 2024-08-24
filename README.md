@@ -26,7 +26,6 @@
   - Spring Security
   - Spring Batch
   - Junit 5
-  - Mockito
   - Mockito Kotlin
   - Instancio
   - h2 database (PostgreSQL mode)
