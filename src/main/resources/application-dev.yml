@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+  batch:
+    job:
+      enabled: false
+      name: ${job.name:NONE}
+    jdbc:
+      initialize-schema: never
+sentry:
+  dsn:
+  logging:
+    minimum-event-level: DEBUG
+logging:
+  level:
+    "[org.hibernate.SQL]": debug
+    "[org.hibernate.type.descriptor.sql]": trace
+    "[org.hibernate.transaction.JDBCTransaction]": debug
+    "[org.hibernate.jdbc.ConnectionManager]": debug
+    "[org.springframework.orm.JpaTransactionManager]": debug
+    "[org.springframework.jdbc]": debug
+

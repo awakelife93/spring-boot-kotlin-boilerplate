@@ -1,0 +1,7 @@
+spring:
+  profiles:
+    active: local
+    group:
+      "local": "local, common, secret-local"
+      "dev": "dev, common, secret-dev"
+      "prod": "prod, common, secret-prod"

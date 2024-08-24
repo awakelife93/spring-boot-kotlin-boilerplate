@@ -1,0 +1,51 @@
+spring:
+  config:
+    activate:
+      on-profile: common
+  mvc:
+    log-resolved-exception: false
+  web:
+    resources.add-mappings: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  jpa:
+    open-in-view: false
+    generate-ddl: false
+    properties:
+      "[hibernate.jdbc.time_zone]": UTC
+server:
+  servlet:
+    encoding:
+      force-response: true
+  error:
+    include-exception: false
+    include-message: always
+    include-stacktrace: ON_PARAM
+    whitelabel.enabled: false
+springdoc:
+  show-actuator: true
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /swagger.html
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method
+    display-request-duration: true
+    disable-swagger-default-url: true
+    doc-expansion: none
+  api-docs:
+    path: /api-docs
+  cache:
+    disabled: true
+  model-and-view-allowed: true
+sentry:
+  traces-sample-rate: 1.0
+  exception-resolver-order: -2147483647
+  max-request-body-size: always
+  send-default-pii: true
+  logging:
+    minimum-event-level: ERROR
+    minimum-breadcrumb-level: DEBUG
+    enabled: true

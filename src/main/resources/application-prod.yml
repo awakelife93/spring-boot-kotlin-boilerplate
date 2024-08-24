@@ -1,0 +1,14 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+sentry:
+  dsn:
