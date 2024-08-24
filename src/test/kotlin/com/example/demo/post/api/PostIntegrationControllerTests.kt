@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -41,6 +42,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 @ExtendWith(MockitoExtension::class)
 class PostIntegrationControllerTests : SecurityItem() {
   private val post: Post = Instancio.create(Post::class.java)
+
+  private val defaultPageable = Pageable.ofSize(1)
 
   @MockBean
   private lateinit var getPostServiceImpl: GetPostServiceImpl
@@ -146,9 +149,9 @@ class PostIntegrationControllerTests : SecurityItem() {
     @Throws(
       Exception::class
     )
-    fun should_ExpectOKResponseToListOfGetPostResponse_when_GivenDefaultPageableAndUserIsAuthenticated() {
+    fun should_ExpectOKResponseToPageOfGetPostResponse_when_GivenDefaultPageableAndUserIsAuthenticated() {
       Mockito.`when`(getPostServiceImpl.getPostList(any<Pageable>()))
-        .thenReturn(listOf(GetPostResponse.of(post)))
+        .thenReturn(PageImpl(listOf(GetPostResponse.of(post)), defaultPageable, 1))
 
       mockMvc
         .perform(
@@ -160,12 +163,12 @@ class PostIntegrationControllerTests : SecurityItem() {
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(commonMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].postId").value(post.id))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value(post.title))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].subTitle").value(post.subTitle))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].content").value(post.content))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].postId").value(post.id))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].title").value(post.title))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].subTitle").value(post.subTitle))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].content").value(post.content))
         .andExpect(
-          MockMvcResultMatchers.jsonPath("$.data.[0].writer.userId").value(post.user.id)
+          MockMvcResultMatchers.jsonPath("$.data.content[0].writer.userId").value(post.user.id)
         )
     }
 
@@ -175,9 +178,9 @@ class PostIntegrationControllerTests : SecurityItem() {
     @Throws(
       Exception::class
     )
-    fun should_ExpectOKResponseToListOfGetPostResponseIsEmpty_when_GivenDefaultPageableAndUserIsAuthenticated() {
+    fun should_ExpectOKResponseToPageOfGetPostResponseIsEmpty_when_GivenDefaultPageableAndUserIsAuthenticated() {
       Mockito.`when`(getPostServiceImpl.getPostList(any<Pageable>()))
-        .thenReturn(listOf())
+        .thenReturn(PageImpl(listOf(), defaultPageable, 0))
 
       mockMvc
         .perform(
@@ -189,7 +192,7 @@ class PostIntegrationControllerTests : SecurityItem() {
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(commonMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").isEmpty())
     }
 
     @Test
@@ -223,9 +226,9 @@ class PostIntegrationControllerTests : SecurityItem() {
     @Throws(
       Exception::class
     )
-    fun should_ExpectOKResponseToListOfGetPostResponse_when_GivenDefaultPageableAndGetExcludeUsersPostsRequestAndUserIsAuthenticated() {
+    fun should_ExpectOKResponseToPageOfGetPostResponse_when_GivenDefaultPageableAndGetExcludeUsersPostsRequestAndUserIsAuthenticated() {
       Mockito.`when`(getPostServiceImpl.getExcludeUsersPostList(any<GetExcludeUsersPostsRequest>(), any<Pageable>()))
-        .thenReturn(listOf(GetPostResponse.of(post)))
+        .thenReturn(PageImpl(listOf(GetPostResponse.of(post)), defaultPageable, 1))
 
       mockMvc
         .perform(
@@ -243,12 +246,12 @@ class PostIntegrationControllerTests : SecurityItem() {
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(commonMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].postId").value(post.id))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value(post.title))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].subTitle").value(post.subTitle))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].content").value(post.content))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].postId").value(post.id))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].title").value(post.title))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].subTitle").value(post.subTitle))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].content").value(post.content))
         .andExpect(
-          MockMvcResultMatchers.jsonPath("$.data.[0].writer.userId").value(post.user.id)
+          MockMvcResultMatchers.jsonPath("$.data.content[0].writer.userId").value(post.user.id)
         )
     }
 
@@ -258,9 +261,9 @@ class PostIntegrationControllerTests : SecurityItem() {
     @Throws(
       Exception::class
     )
-    fun should_ExpectOKResponseToListOfGetPostResponseIsEmpty_when_GivenDefaultPageableAndGetExcludeUsersPostsRequestAndUserIsAuthenticated() {
+    fun should_ExpectOKResponseToPageOfGetPostResponseIsEmpty_when_GivenDefaultPageableAndGetExcludeUsersPostsRequestAndUserIsAuthenticated() {
       Mockito.`when`(getPostServiceImpl.getExcludeUsersPostList(any<GetExcludeUsersPostsRequest>(), any<Pageable>()))
-        .thenReturn(listOf())
+        .thenReturn(PageImpl(listOf(), defaultPageable, 0))
 
       mockMvc
         .perform(
@@ -278,7 +281,7 @@ class PostIntegrationControllerTests : SecurityItem() {
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(commonMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").isEmpty())
     }
 
     @Test

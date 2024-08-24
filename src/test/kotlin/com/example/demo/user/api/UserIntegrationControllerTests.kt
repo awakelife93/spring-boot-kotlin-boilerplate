@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -42,6 +43,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 @ExtendWith(MockitoExtension::class)
 class UserIntegrationControllerTests : SecurityItem() {
   private val user: User = Instancio.create(User::class.java)
+
+  private val defaultPageable = Pageable.ofSize(1)
 
   @MockBean
   private lateinit var getUserServiceImpl: GetUserServiceImpl
@@ -152,9 +155,9 @@ class UserIntegrationControllerTests : SecurityItem() {
     @Throws(
       Exception::class
     )
-    fun should_ExpectOKResponseToListOfGetUserResponse_when_GivenDefaultPageableAndUserIsAuthenticated() {
+    fun should_ExpectOKResponseToPageOfGetUserResponse_when_GivenDefaultPageableAndUserIsAuthenticated() {
       Mockito.`when`(getUserServiceImpl.getUserList(any<Pageable>()))
-        .thenReturn(listOf(GetUserResponse.of(user)))
+        .thenReturn(PageImpl(listOf(GetUserResponse.of(user)), defaultPageable, 1))
 
       mockMvc
         .perform(
@@ -166,10 +169,10 @@ class UserIntegrationControllerTests : SecurityItem() {
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(commonMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].userId").value(user.id))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].email").value(user.email))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].name").value(user.name))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].role").value(user.role.name))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].userId").value(user.id))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].email").value(user.email))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].name").value(user.name))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].role").value(user.role.name))
     }
 
     @Test
@@ -178,9 +181,9 @@ class UserIntegrationControllerTests : SecurityItem() {
     @Throws(
       Exception::class
     )
-    fun should_ExpectOKResponseToListOfGetUserResponseIsEmpty_when_GivenDefaultPageableAndUserIsAuthenticated() {
+    fun should_ExpectOKResponseToPageOfGetUserResponseIsEmpty_when_GivenDefaultPageableAndUserIsAuthenticated() {
       Mockito.`when`(getUserServiceImpl.getUserList(any<Pageable>()))
-        .thenReturn(listOf())
+        .thenReturn(PageImpl(listOf(), defaultPageable, 0))
 
       mockMvc
         .perform(
@@ -192,7 +195,7 @@ class UserIntegrationControllerTests : SecurityItem() {
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(commonMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").isEmpty())
     }
 
     @Test

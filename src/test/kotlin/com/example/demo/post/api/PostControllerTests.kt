@@ -22,6 +22,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
@@ -73,9 +74,9 @@ class PostControllerTests {
 
   @Test
   @DisplayName("Get post list")
-  fun should_AssertListOfGetPostResponse_when_GivenDefaultPageable() {
+  fun should_AssertPageOfGetPostResponse_when_GivenDefaultPageable() {
     Mockito.`when`(getPostServiceImpl.getPostList(any<Pageable>()))
-      .thenReturn(listOf(GetPostResponse.of(post)))
+      .thenReturn(PageImpl(listOf(GetPostResponse.of(post)), defaultPageable, 1))
 
     val response = postController.getPostList(
       defaultPageable
@@ -90,22 +91,22 @@ class PostControllerTests {
     }
 
     assertThat(body).isNotEmpty()
-    assertEquals(post.id, body[0].postId)
-    assertEquals(post.title, body[0].title)
-    assertEquals(post.subTitle, body[0].subTitle)
-    assertEquals(post.content, body[0].content)
-    assertEquals(post.user.id, body[0].writer.userId)
+    assertEquals(post.id, body.content[0].postId)
+    assertEquals(post.title, body.content[0].title)
+    assertEquals(post.subTitle, body.content[0].subTitle)
+    assertEquals(post.content, body.content[0].content)
+    assertEquals(post.user.id, body.content[0].writer.userId)
   }
 
   @Test
   @DisplayName("Get exclude users post list")
-  fun should_AssertListOfGetPostResponse_when_GivenDefaultPageableAndGetExcludeUsersPostsRequest() {
+  fun should_AssertPageOfGetPostResponse_when_GivenDefaultPageableAndGetExcludeUsersPostsRequest() {
     val getExcludeUsersPostsRequest = Instancio.create(
       GetExcludeUsersPostsRequest::class.java
     )
 
     Mockito.`when`(getPostServiceImpl.getExcludeUsersPostList(any<GetExcludeUsersPostsRequest>(), any<Pageable>()))
-      .thenReturn(listOf(GetPostResponse.of(post)))
+      .thenReturn(PageImpl(listOf(GetPostResponse.of(post)), defaultPageable, 1))
 
     val response = postController.getExcludeUsersPostList(
       getExcludeUsersPostsRequest,
@@ -121,11 +122,11 @@ class PostControllerTests {
     }
 
     assertThat(body).isNotEmpty()
-    assertEquals(post.id, body[0].postId)
-    assertEquals(post.title, body[0].title)
-    assertEquals(post.subTitle, body[0].subTitle)
-    assertEquals(post.content, body[0].content)
-    assertEquals(post.user.id, body[0].writer.userId)
+    assertEquals(post.id, body.content[0].postId)
+    assertEquals(post.title, body.content[0].title)
+    assertEquals(post.subTitle, body.content[0].subTitle)
+    assertEquals(post.content, body.content[0].content)
+    assertEquals(post.user.id, body.content[0].writer.userId)
   }
 
   @Test
@@ -183,7 +184,7 @@ class PostControllerTests {
     val body = requireNotNull(response.body) {
       "Response body must not be null"
     }
-    
+
     assertEquals(post.id, body.postId)
     assertEquals(post.title, body.title)
     assertEquals(post.subTitle, body.subTitle)

@@ -5,6 +5,7 @@ import com.example.demo.user.dto.serve.response.GetUserResponse
 import com.example.demo.user.entity.User
 import com.example.demo.user.exception.UserNotFoundException
 import com.example.demo.user.repository.UserRepository
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,10 +30,9 @@ class GetUserServiceImpl(
     return user.let(GetUserResponse::of)
   }
 
-  override fun getUserList(pageable: Pageable): List<GetUserResponse> {
+  override fun getUserList(pageable: Pageable): Page<GetUserResponse> {
     return userRepository
       .findAll(pageable)
       .map(GetUserResponse::of)
-      .toList()
   }
 }

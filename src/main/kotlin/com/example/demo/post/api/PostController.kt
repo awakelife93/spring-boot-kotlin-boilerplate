@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -69,7 +70,7 @@ class PostController(
     )]
   )
   @GetMapping
-  fun getPostList(pageable: Pageable): ResponseEntity<List<GetPostResponse>> = ResponseEntity.ok(
+  fun getPostList(pageable: Pageable): ResponseEntity<Page<GetPostResponse>> = ResponseEntity.ok(
     getPostService.getPostList(
       pageable
     )
@@ -99,7 +100,7 @@ class PostController(
   fun getExcludeUsersPostList(
     getExcludeUsersPostsRequest: GetExcludeUsersPostsRequest,
     pageable: Pageable
-  ): ResponseEntity<List<GetPostResponse>> =
+  ): ResponseEntity<Page<GetPostResponse>> =
     ResponseEntity.ok(
       getPostService.getExcludeUsersPostList(
         getExcludeUsersPostsRequest,

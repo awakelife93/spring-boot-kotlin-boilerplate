@@ -6,6 +6,8 @@ import com.example.demo.post.entity.QPost.post
 import com.example.demo.post.repository.CustomPostRepository
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,8 +19,8 @@ open class CustomPostRepositoryImpl(
   override fun getExcludeUsersPosts(
     getExcludeUsersPostsRequest: GetExcludeUsersPostsRequest,
     pageable: Pageable
-  ): List<GetPostResponse> {
-    return jpaQueryFactory
+  ): Page<GetPostResponse> {
+    val queryFactory = jpaQueryFactory
       .select(
         Projections.fields(
           GetPostResponse::class.java,
@@ -33,5 +35,7 @@ open class CustomPostRepositoryImpl(
       .offset(pageable.offset)
       .limit(pageable.pageSize.toLong())
       .fetch()
+
+    return PageImpl(queryFactory, pageable, queryFactory.size.toLong())
   }
 }

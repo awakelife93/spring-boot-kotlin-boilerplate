@@ -113,8 +113,8 @@ class GetUserServiceTests {
   inner class GetUserListTest {
     @Test
     @DisplayName("Success get user list")
-    fun should_AssertListOfGetUserResponse_when_GivenDefaultPageable() {
-      val userList: Page<User> = PageImpl(listOf(user))
+    fun should_AssertPageOfGetUserResponse_when_GivenDefaultPageable() {
+      val userList: Page<User> = PageImpl(listOf(user), defaultPageable, 1)
 
       Mockito.`when`(userRepository.findAll(any<Pageable>())).thenReturn(userList)
 
@@ -123,15 +123,15 @@ class GetUserServiceTests {
       )
 
       assertThat(getUserResponseList).isNotEmpty()
-      assertEquals(getUserResponseList[0].email, user.email)
-      assertEquals(getUserResponseList[0].name, user.name)
-      assertEquals(getUserResponseList[0].role, user.role)
+      assertEquals(getUserResponseList.content[0].email, user.email)
+      assertEquals(getUserResponseList.content[0].name, user.name)
+      assertEquals(getUserResponseList.content[0].role, user.role)
     }
 
     @Test
     @DisplayName("Get user list is empty")
-    fun should_AssertListOfGetUserResponseIsEmpty_when_GivenDefaultPageable() {
-      val emptyUserList: Page<User> = PageImpl(listOf())
+    fun should_AssertPageOfGetUserResponseIsEmpty_when_GivenDefaultPageable() {
+      val emptyUserList: Page<User> = PageImpl(listOf(), defaultPageable, 0)
 
       Mockito.`when`(userRepository.findAll(any<Pageable>()))
         .thenReturn(emptyUserList)
@@ -141,7 +141,7 @@ class GetUserServiceTests {
       )
 
       assertThat(getUserResponseList).isEmpty()
-      assertEquals(getUserResponseList.size, 0)
+      assertEquals(getUserResponseList.totalElements, 0)
     }
   }
 }

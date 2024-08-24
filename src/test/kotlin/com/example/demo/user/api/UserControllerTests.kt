@@ -22,6 +22,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
@@ -75,9 +76,9 @@ class UserControllerTests {
 
   @Test
   @DisplayName("Get user list")
-  fun should_AssertListOfGetUserResponse_when_GivenDefaultPageable() {
+  fun should_AssertPageOfGetUserResponse_when_GivenDefaultPageable() {
     Mockito.`when`(getUserServiceImpl.getUserList(any<Pageable>()))
-      .thenReturn(listOf(GetUserResponse.of(user)))
+      .thenReturn(PageImpl(listOf(GetUserResponse.of(user)), defaultPageable, 1))
 
     val response = userController.getUserList(
       defaultPageable
@@ -92,10 +93,10 @@ class UserControllerTests {
     }
 
     assertThat(body).isNotEmpty()
-    assertEquals(user.id, body[0].userId)
-    assertEquals(user.email, body[0].email)
-    assertEquals(user.name, body[0].name)
-    assertEquals(user.role, body[0].role)
+    assertEquals(user.id, body.content[0].userId)
+    assertEquals(user.email, body.content[0].email)
+    assertEquals(user.name, body.content[0].name)
+    assertEquals(user.role, body.content[0].role)
   }
 
   @Test

@@ -30,7 +30,7 @@ import org.springframework.test.context.ActiveProfiles
 )
 class GetPostServiceTests {
   private val post: Post = Instancio.create(Post::class.java)
-  
+
   private val defaultPageable = Pageable.ofSize(1)
 
   @Mock
@@ -79,8 +79,8 @@ class GetPostServiceTests {
   inner class GetPostListTest {
     @Test
     @DisplayName("Success get post list")
-    fun should_AssertListOfGetPostResponse_when_GivenDefaultPageable() {
-      val postList: Page<Post> = PageImpl(listOf(post))
+    fun should_AssertPageOfGetPostResponse_when_GivenDefaultPageable() {
+      val postList: Page<Post> = PageImpl(listOf(post), defaultPageable, 1)
 
       Mockito.`when`(
         postRepository.findAll(any<Pageable>())
@@ -91,23 +91,23 @@ class GetPostServiceTests {
       )
 
       assertThat(getPostResponseList).isNotEmpty()
-      assertEquals(post.id, getPostResponseList[0].postId)
-      assertEquals(post.title, getPostResponseList[0].title)
+      assertEquals(post.id, getPostResponseList.content[0].postId)
+      assertEquals(post.title, getPostResponseList.content[0].title)
       assertEquals(
         post.subTitle,
-        getPostResponseList[0].subTitle
+        getPostResponseList.content[0].subTitle
       )
-      assertEquals(post.content, getPostResponseList[0].content)
+      assertEquals(post.content, getPostResponseList.content[0].content)
       assertEquals(
         post.user.id,
-        getPostResponseList[0].writer.userId
+        getPostResponseList.content[0].writer.userId
       )
     }
 
     @Test
     @DisplayName("Get post list is empty")
-    fun should_AssertListOfGetPostResponseIsEmpty_when_GivenDefaultPageable() {
-      val emptyPostList: Page<Post> = PageImpl(listOf())
+    fun should_AssertPageOfGetPostResponseIsEmpty_when_GivenDefaultPageable() {
+      val emptyPostList: Page<Post> = PageImpl(listOf(), defaultPageable, 0)
 
       Mockito.`when`(
         postRepository.findAll(
@@ -121,7 +121,7 @@ class GetPostServiceTests {
       )
 
       assertThat(getPostResponseList).isEmpty()
-      assertEquals(getPostResponseList.size, 0)
+      assertEquals(getPostResponseList.totalElements, 0)
     }
   }
 
@@ -134,7 +134,7 @@ class GetPostServiceTests {
 
     @Test
     @DisplayName("Success get exclude users post list")
-    fun should_AssertListOfGetPostResponse_when_GivenDefaultPageableAndGetExcludeUsersPostsRequest() {
+    fun should_AssertPageOfGetPostResponse_when_GivenDefaultPageableAndGetExcludeUsersPostsRequest() {
       val getPostResponse = GetPostResponse.of(post)
 
       Mockito.`when`(
@@ -143,7 +143,7 @@ class GetPostServiceTests {
           any<Pageable>()
         )
       )
-        .thenReturn(listOf(getPostResponse))
+        .thenReturn(PageImpl(listOf(getPostResponse), defaultPageable, 1))
 
       val getPostResponseList = getPostServiceImpl.getExcludeUsersPostList(
         getExcludeUsersPostsRequest,
@@ -151,37 +151,37 @@ class GetPostServiceTests {
       )
 
       assertThat(getPostResponseList).isNotEmpty()
-      assertEquals(post.id, getPostResponseList[0].postId)
-      assertEquals(post.title, getPostResponseList[0].title)
+      assertEquals(post.id, getPostResponseList.content[0].postId)
+      assertEquals(post.title, getPostResponseList.content[0].title)
       assertEquals(
         post.subTitle,
-        getPostResponseList[0].subTitle
+        getPostResponseList.content[0].subTitle
       )
-      assertEquals(post.content, getPostResponseList[0].content)
+      assertEquals(post.content, getPostResponseList.content[0].content)
       assertEquals(
         post.user.id,
-        getPostResponseList[0].writer.userId
+        getPostResponseList.content[0].writer.userId
       )
     }
 
     @Test
     @DisplayName("Get get exclude users post list is empty")
-    fun should_AssertListOfGetPostResponseIsEmpty_when_GivenDefaultPageableAndGetExcludeUsersPostsRequest() {
+    fun should_AssertPageOfGetPostResponseIsEmpty_when_GivenDefaultPageableAndGetExcludeUsersPostsRequest() {
       Mockito.`when`(
         postRepository.getExcludeUsersPosts(
           any<GetExcludeUsersPostsRequest>(),
           any<Pageable>()
         )
       )
-        .thenReturn(listOf())
+        .thenReturn(PageImpl(listOf(), defaultPageable, 0))
 
       val getPostResponseList = getPostServiceImpl.getExcludeUsersPostList(
         getExcludeUsersPostsRequest,
         defaultPageable
       )
 
-      assertThat(getPostResponseList).isEmpty()
-      assertEquals(getPostResponseList.size, 0)
+      assertThat(getPostResponseList.content).isEmpty()
+      assertEquals(getPostResponseList.totalElements, 0)
     }
   }
 }
