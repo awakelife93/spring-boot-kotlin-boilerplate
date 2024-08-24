@@ -25,9 +25,9 @@ repositories {
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web")
 
+  // kotlin
+  implementation("org.jetbrains.kotlin:kotlin-stdlib")
   implementation(kotlin("stdlib-jdk8"))
-
-  // kotlin reflect
   implementation("org.jetbrains.kotlin:kotlin-reflect")
 
   // security
