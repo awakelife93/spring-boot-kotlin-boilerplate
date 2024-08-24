@@ -30,7 +30,6 @@ class WebSecurityConfig(
   private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
 ) {
 
-
   @Bean
   fun webSecurityCustomizer(): WebSecurityCustomizer {
     return WebSecurityCustomizer { webSecurity: WebSecurity ->
